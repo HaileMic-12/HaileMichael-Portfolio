@@ -162,15 +162,16 @@ const Navbar = () => {
           </a>
 
           {/* Desktop Nav */}
-          <div className="nav-links">
-            <a href="#skills" className="nav-link">Skills</a>
-            <a href="#projects" className="nav-link">Projects</a>
-            <a href="#contact" className="nav-link">Contact</a>
-            {/* Add your actual resume PDF link in the href below */}
-          <a href="https://haile-michael-portfolio.vercel.app/hailemichaelresume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn">
-  Resume
-</a>
-          </div>
+       {/* Mobile Nav Dropdown */}
+<div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
+  <a href="#skills" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
+  <a href="#projects" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
+  <a href="#contact" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
+  {/* Update the href right here 👇 */}
+  <a href="/hailemichaelresume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn" style={{display: 'inline-block', width: 'fit-content', margin: '0 auto'}}>
+    Resume
+  </a>
+</div>
 
           {/* Mobile Toggle Button */}
           <button 
