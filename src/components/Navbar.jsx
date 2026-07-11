@@ -167,7 +167,7 @@ const Navbar = () => {
             <a href="#projects" className="nav-link">Projects</a>
             <a href="#contact" className="nav-link">Contact</a>
             {/* Add your actual resume PDF link in the href below */}
-            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn">
+            <a href="/hailemichaelresume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn">
               Resume
             </a>
           </div>
