@@ -1,0 +1,23 @@
+/* src/index.css or src/App.css */
+
+/* 1. Remove all default browser margins and paddings */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 2. Force the entire page background to be our premium dark color */
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #0f172a; /* This matches your components exactly */
+  color: #f8fafc;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden; /* This prevents horizontal scrolling if animations push slightly off-screen */
+}
+
+/* 3. Smooth scrolling for when recruiters click your navigation links */
+html {
+  scroll-behavior: smooth;
+}
