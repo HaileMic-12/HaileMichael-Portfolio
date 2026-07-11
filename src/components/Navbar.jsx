@@ -161,17 +161,15 @@ const Navbar = () => {
             Hailemichael<span>.</span>
           </a>
 
-          {/* Desktop Nav */}
-       {/* Mobile Nav Dropdown */}
-<div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
-  <a href="#skills" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
-  <a href="#projects" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
-  <a href="#contact" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-  {/* Update the href right here 👇 */}
-  <a href="/hailemichaelresume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn" style={{display: 'inline-block', width: 'fit-content', margin: '0 auto'}}>
-    Resume
-  </a>
-</div>
+          {/* Desktop Nav - Corrected Link */}
+          <div className="nav-links">
+            <a href="#skills" className="nav-link">Skills</a>
+            <a href="#projects" className="nav-link">Projects</a>
+            <a href="#contact" className="nav-link">Contact</a>
+            <a href="/hailemichaelresume.pdf?v=1" target="_blank" rel="noopener noreferrer" className="resume-btn">
+              Resume
+            </a>
+          </div>
 
           {/* Mobile Toggle Button */}
           <button 
@@ -182,12 +180,12 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Nav Dropdown */}
+        {/* Mobile Nav Dropdown - Corrected Link */}
         <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
           <a href="#skills" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
           <a href="#projects" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
           <a href="#contact" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="resume-btn" style={{display: 'inline-block', width: 'fit-content', margin: '0 auto'}}>
+          <a href="/hailemichaelresume.pdf?v=1" target="_blank" rel="noopener noreferrer" className="resume-btn" style={{display: 'inline-block', width: 'fit-content', margin: '0 auto'}}>
             Resume
           </a>
         </div>
