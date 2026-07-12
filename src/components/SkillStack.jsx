@@ -1,67 +1,132 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { motion } from 'framer-motion';
+import { TbDeviceMobileCode, TbServerCog, TbCloudDataConnection, TbTools } from 'react-icons/tb';
 
-const skillsData = [
+// 1. DATA EXTRACTION: Moved outside the component to prevent unnecessary memory reallocation.
+const SKILL_DATA = [
   {
+    id: "frontend",
     category: "Frontend & Mobile",
-    icon: "📱",
+    icon: TbDeviceMobileCode,
     skills: ["React.js", "React Native", "Expo", "JavaScript (ES6+)", "HTML5 / CSS3", "UI/UX Implementation"]
   },
   {
+    id: "backend",
     category: "Backend Engineering",
-    icon: "⚙️",
+    icon: TbServerCog,
     skills: ["Python", "PHP", "Java", "C++", "C#", "RESTful APIs"]
   },
   {
+    id: "cloud",
     category: "Database & Cloud",
-    icon: "☁️",
-    skills: ["MySQL", "Firebase Firestore", "Firebase Authentication", "Cloud Functions", "Realtime Database"]
+    icon: TbCloudDataConnection,
+    skills: ["MySQL", "Firebase Firestore", "Firebase Auth", "Cloud Functions", "Realtime Database"]
   },
   {
+    id: "tools",
     category: "Tools & Architecture",
-    icon: "🛠️",
+    icon: TbTools,
     skills: ["Git", "GitHub", "System Architecture", "Biometric Integration", "Agile / Scrum"]
   }
 ];
+
+// 2. PERFORMANCE & SEMANTICS: Memoized sub-component using motion elements
+const SkillCard = memo(({ category, Icon, skills, index }) => (
+  <motion.article 
+    className="skill-category-card"
+    aria-labelledby={`skill-heading-${category.id}`}
+    // Scroll Reveal Stagger Logic
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-40px" }}
+    transition={{ duration: 0.6, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+    // Hover Card Physics
+    whileHover={{ y: -8, boxShadow: "0 20px 50px rgba(35, 37, 36, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.8)", background: "rgba(252, 251, 250, 0.9)" }}
+  >
+    <header className="category-header">
+      <motion.div 
+        className="category-icon-wrapper" aria-hidden="true"
+        whileHover={{ scale: 1.05, rotate: -5 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      >
+        <Icon className="category-icon" />
+      </motion.div>
+      <h3 id={`skill-heading-${category.id}`} className="category-title">{category}</h3>
+    </header>
+    
+    <ul className="skills-list" aria-label={`Skills in ${category}`}>
+      {skills.map((skill, skillIndex) => (
+        <motion.li 
+          key={skillIndex} 
+          className="skill-tag"
+          whileHover={{ scale: 1.05, y: -2, color: "#C08457", borderColor: "#C08457" }}
+          transition={{ type: "spring", stiffness: 500, damping: 20 }}
+        >
+          {skill}
+        </motion.li>
+      ))}
+    </ul>
+  </motion.article>
+));
+
+SkillCard.displayName = 'SkillCard';
 
 const SkillStack = () => {
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600&display=swap');
+
+        /* 3. MAINTAINABILITY: CSS Custom Properties harmonized with the Project Gallery */
         :root {
-          --accent-cyan: #38bdf8;
-          --accent-purple: #8b5cf6;
-          --text-main: #f8fafc;
-          --text-muted: #cbd5e1;
-          --bg-dark: #0f172a;
-          --glass-bg: rgba(30, 41, 59, 0.4);
-          --glass-border: rgba(255, 255, 255, 0.08);
+          --skill-bg: #F4F3F0;
+          --skill-text-main: #232524;
+          --skill-text-muted: #5C605E;
+          --skill-accent-primary: #C08457; /* Warm Clay */
+          --skill-accent-secondary: #8A9A86; /* Sage Green */
+          --skill-card-bg: rgba(252, 251, 250, 0.65);
+          --skill-border: rgba(220, 218, 213, 0.5);
+          --skill-focus-ring: #C08457;
         }
 
         .skills-section {
           position: relative;
           padding: 8rem 2rem;
-          background-color: var(--bg-dark);
+          background-color: var(--skill-bg);
+          /* Tactile Paper Grain SVG */
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
           overflow: hidden;
           z-index: 1;
+          font-family: 'Inter', sans-serif;
         }
 
-        /* Ambient Orbs */
-        .orb {
+        /* Ambient Watercolor Orbs */
+        .skill-orb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(120px);
+          filter: blur(100px);
           z-index: -1;
-          animation: float 20s infinite ease-in-out alternate;
+          animation: float-slow-skills 22s infinite ease-in-out alternate;
           opacity: 0.5;
+          pointer-events: none;
         }
-        .orb-left {
-          top: 20%; left: -5%; width: 500px; height: 500px;
-          background: rgba(139, 92, 246, 0.12); /* Purple */
+
+        .orb-top-right {
+          top: -5%; right: -5%;
+          width: 700px; height: 700px;
+          background: rgba(212, 163, 115, 0.25); /* Terracotta */
         }
-        .orb-right {
-          bottom: 20%; right: -5%; width: 500px; height: 500px;
-          background: rgba(56, 189, 248, 0.12); /* Cyan */
-          animation-delay: -5s;
+
+        .orb-bottom-left {
+          bottom: -10%; left: -10%;
+          width: 600px; height: 600px;
+          background: rgba(138, 154, 134, 0.3); /* Sage */
+          animation-delay: -7s;
+        }
+
+        @keyframes float-slow-skills {
+          0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+          100% { transform: translate(-50px, 40px) scale(1.1) rotate(-5deg); }
         }
 
         .skills-container {
@@ -69,169 +134,167 @@ const SkillStack = () => {
           margin: 0 auto;
         }
 
-        /* Header Animations */
         .section-header {
           text-align: center;
-          margin-bottom: 5rem;
-          opacity: 0;
-          animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(30px); filter: blur(10px); }
-          to { opacity: 1; transform: translateY(0); filter: blur(0); }
+          margin-bottom: 6rem;
         }
 
         .section-title {
-          font-size: 3rem;
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(2.5rem, 5vw, 4rem);
           font-weight: 800;
-          color: var(--text-main);
-          margin-bottom: 1rem;
+          letter-spacing: -0.04em;
+          color: var(--skill-text-main);
+          margin-bottom: 1.5rem;
+          line-height: 1.1;
         }
 
         .highlight-text {
-          background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          color: var(--skill-accent-primary);
+          font-style: italic;
+          font-weight: 600;
         }
 
         .section-subtitle {
-          color: var(--text-muted);
+          color: var(--skill-text-muted);
           font-size: 1.15rem;
           max-width: 600px;
           margin: 0 auto;
           line-height: 1.8;
+          font-weight: 400;
         }
 
-        /* Grid Layout for Skill Categories */
+        /* Grid Layout */
         .skills-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-          gap: 2rem;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+          gap: 2.5rem;
         }
 
-        /* Glassmorphism Skill Card */
+        /* Frosted Glassmorphism Card */
         .skill-category-card {
-          background: var(--glass-bg);
+          background: var(--skill-card-bg);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid var(--glass-border);
+          border: 1px solid rgba(255, 255, 255, 0.8);
           border-radius: 1.5rem;
-          padding: 2.5rem 2rem;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          padding: 2.5rem;
+          box-shadow: 0 10px 40px rgba(35, 37, 36, 0.03), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
           display: flex;
           flex-direction: column;
-          
-          opacity: 0;
-          animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Staggered Entrance */
-        .skill-category-card:nth-child(1) { animation-delay: 0.2s; }
-        .skill-category-card:nth-child(2) { animation-delay: 0.4s; }
-        .skill-category-card:nth-child(3) { animation-delay: 0.6s; }
-        .skill-category-card:nth-child(4) { animation-delay: 0.8s; }
-
-        .skill-category-card:hover {
-          transform: translateY(-8px);
-          border-color: rgba(56, 189, 248, 0.3);
-          box-shadow: 0 20px 40px -10px rgba(56, 189, 248, 0.15), 
-                      0 0 20px rgba(139, 92, 246, 0.05);
-          background: rgba(30, 41, 59, 0.6);
+        /* 4. ACCESSIBILITY: Focus States */
+        .skill-category-card:focus-within {
+          outline: 2px solid var(--skill-focus-ring);
+          outline-offset: 4px;
         }
 
         .category-header {
           display: flex;
           align-items: center;
-          gap: 1rem;
+          gap: 1.2rem;
           margin-bottom: 2rem;
         }
 
-        .category-icon {
-          font-size: 2rem;
-          background: rgba(255, 255, 255, 0.05);
-          width: 50px;
-          height: 50px;
+        .category-icon-wrapper {
           display: flex;
           align-items: center;
           justify-content: center;
+          width: 54px;
+          height: 54px;
+          background: rgba(255, 255, 255, 0.8);
+          border: 1px solid var(--skill-border);
           border-radius: 1rem;
-          border: 1px solid var(--glass-border);
+          box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .category-icon {
+          font-size: 1.75rem;
+          color: var(--skill-accent-primary);
         }
 
         .category-title {
-          font-size: 1.25rem;
+          font-family: 'Playfair Display', serif;
+          font-size: 1.5rem;
           font-weight: 700;
-          color: var(--text-main);
+          color: var(--skill-text-main);
+          line-height: 1.2;
         }
 
-        /* Individual Skill Tags */
+        /* Elegant Skill Tags */
         .skills-list {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.75rem;
+          gap: 0.7rem;
+          list-style: none;
+          padding: 0;
+          margin: 0;
         }
 
         .skill-tag {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: var(--text-muted);
           padding: 0.5rem 1rem;
-          border-radius: 9999px;
+          background: rgba(255, 255, 255, 0.5);
+          border: 1px solid var(--skill-border);
+          color: var(--skill-text-muted);
           font-size: 0.85rem;
-          font-weight: 600;
-          transition: all 0.3s ease;
+          font-weight: 500;
+          border-radius: 2rem;
         }
 
         .skill-category-card:hover .skill-tag {
-          border-color: rgba(255, 255, 255, 0.2);
+          background: #ffffff;
+          border-color: rgba(209, 213, 208, 0.8);
+          color: var(--skill-text-main);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.02);
         }
 
-        .skill-tag:hover {
-          background: rgba(56, 189, 248, 0.1);
-          border-color: var(--accent-cyan) !important;
-          color: var(--accent-cyan);
-          transform: translateY(-2px);
+        /* 5. GRACEFUL DEGRADATION: Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          .skill-orb, .skill-tag {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+          }
         }
 
         @media (max-width: 768px) {
           .skills-section { padding: 5rem 1.5rem; }
-          .section-title { font-size: 2.5rem; }
-          .skill-category-card { padding: 2rem 1.5rem; }
+          .skill-category-card { padding: 2rem; }
         }
       `}</style>
 
-      <section className="skills-section" id="skills">
-        <div className="orb orb-left"></div>
-        <div className="orb orb-right"></div>
+      {/* SEMANTICS: Accessible landmark region */}
+      <section className="skills-section" id="skills" aria-labelledby="skills-heading">
+        <div className="skill-orb orb-top-right" aria-hidden="true"></div>
+        <div className="skill-orb orb-bottom-left" aria-hidden="true"></div>
 
         <div className="skills-container">
           
-          <div className="section-header">
-            <h2 className="section-title">Engineering <span className="highlight-text">Arsenal</span></h2>
+          <motion.header 
+            className="section-header"
+            initial={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
+            whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <h2 id="skills-heading" className="section-title">
+              Engineering <span className="highlight-text">Arsenal.</span>
+            </h2>
             <p className="section-subtitle">
               A comprehensive toolkit spanning from cross-platform mobile development to robust backend infrastructure and database management.
             </p>
-          </div>
+          </motion.header>
 
           <div className="skills-grid">
-            {skillsData.map((category, index) => (
-              <div key={index} className="skill-category-card">
-                <div className="category-header">
-                  <span className="category-icon">{category.icon}</span>
-                  <h3 className="category-title">{category.category}</h3>
-                </div>
-                
-                <div className="skills-list">
-                  {category.skills.map((skill, skillIndex) => (
-                    <span key={skillIndex} className="skill-tag">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            {SKILL_DATA.map((data, index) => (
+              <SkillCard 
+                key={data.id} 
+                category={data.category} 
+                Icon={data.icon} 
+                skills={data.skills} 
+                index={index} 
+              />
             ))}
           </div>
 

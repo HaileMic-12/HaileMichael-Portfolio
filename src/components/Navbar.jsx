@@ -1,41 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { TbMenu, TbX } from 'react-icons/tb';
 
-const Navbar = () => {
+// 1. DATA EXTRACTION: Define links outside to prevent reallocation
+const NAV_LINKS = [
+  { name: 'Skills', href: '#skills' },
+  { name: 'Projects', href: '#projects' },
+  { name: 'Contact', href: '#contact' }
+];
+
+const Navbar = memo(() => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Add a blur effect when scrolling down
+  // Smooth frosted glass transition on scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when window is resized to desktop width
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobileMenuOpen]);
 
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap');
+
         :root {
-          --accent-cyan: #38bdf8;
-          --text-main: #f8fafc;
-          --text-muted: #cbd5e1;
-          --glass-bg: rgba(15, 23, 42, 0.7);
-          --glass-border: rgba(255, 255, 255, 0.08);
+          --nav-text-main: #232524;
+          --nav-text-muted: #5C605E;
+          --nav-accent: #C08457; 
+          --nav-glass-bg: rgba(252, 251, 250, 0.85); 
+          --nav-glass-border: rgba(220, 218, 213, 0.8);
+          --nav-focus-ring: #C08457;
         }
 
-        .navbar-container {
+        .navbar-wrapper {
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
-          z-index: 100;
-          transition: all 0.3s ease;
+          z-index: 1000;
+          transition: padding 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease, border 0.4s ease;
           padding: ${isScrolled ? '1rem 2rem' : '1.5rem 2rem'};
-          background: ${isScrolled ? 'var(--glass-bg)' : 'transparent'};
+          background: ${isScrolled ? 'var(--nav-glass-bg)' : 'transparent'};
           backdrop-filter: ${isScrolled ? 'blur(20px)' : 'none'};
           -webkit-backdrop-filter: ${isScrolled ? 'blur(20px)' : 'none'};
-          border-bottom: ${isScrolled ? '1px solid var(--glass-border)' : '1px solid transparent'};
+          border-bottom: ${isScrolled ? '1px solid var(--nav-glass-border)' : '1px solid transparent'};
+          box-shadow: ${isScrolled ? '0 4px 30px rgba(35, 37, 36, 0.03)' : 'none'};
+          font-family: 'Inter', sans-serif;
         }
 
         .navbar-content {
@@ -46,37 +72,58 @@ const Navbar = () => {
           align-items: center;
         }
 
-        /* Logo Styling */
+        /* Editorial Logo Styling */
         .nav-logo {
-          font-size: 1.5rem;
+          font-family: 'Playfair Display', serif;
+          font-size: 1.6rem;
           font-weight: 800;
-          color: var(--text-main);
+          color: var(--nav-text-main);
           text-decoration: none;
           letter-spacing: -0.02em;
+          outline: none;
         }
 
         .nav-logo span {
-          color: var(--accent-cyan);
+          color: var(--nav-accent);
+        }
+
+        .nav-logo:focus-visible {
+          outline: 2px solid var(--nav-focus-ring);
+          outline-offset: 4px;
+          border-radius: 4px;
         }
 
         /* Desktop Navigation Links */
-        .nav-links {
+        .nav-list {
           display: flex;
           gap: 2.5rem;
           align-items: center;
+          list-style: none;
+          margin: 0;
+          padding: 0;
         }
 
         .nav-link {
-          color: var(--text-muted);
+          color: var(--nav-text-muted);
           text-decoration: none;
-          font-size: 0.95rem;
-          font-weight: 500;
-          transition: all 0.3s ease;
+          font-size: 0.9rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
           position: relative;
+          outline: none;
+          padding: 0.4rem 0;
+          display: inline-block;
         }
 
-        .nav-link:hover {
-          color: var(--text-main);
+        .nav-link:hover, .nav-link:focus-visible {
+          color: var(--nav-accent);
+        }
+
+        .nav-link:focus-visible {
+          outline: 2px solid var(--nav-focus-ring);
+          outline-offset: 4px;
+          border-radius: 2px;
         }
 
         .nav-link::after {
@@ -84,114 +131,209 @@ const Navbar = () => {
           position: absolute;
           width: 0;
           height: 2px;
-          bottom: -4px;
+          bottom: 0;
           left: 0;
-          background-color: var(--accent-cyan);
-          transition: width 0.3s ease;
+          background-color: var(--nav-accent);
+          transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .nav-link:hover::after {
           width: 100%;
         }
 
-        /* Resume Button */
+        /* Premium Resume Button */
         .resume-btn {
-          padding: 0.6rem 1.5rem;
-          background: rgba(56, 189, 248, 0.1);
-          color: var(--accent-cyan);
-          border: 1px solid rgba(56, 189, 248, 0.3);
-          border-radius: 0.5rem;
-          font-weight: 600;
+          padding: 0.7rem 1.6rem;
+          background: transparent;
+          color: var(--nav-text-main);
+          border: 1px solid var(--nav-glass-border);
+          border-radius: 2rem; 
+          font-size: 0.85rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
           text-decoration: none;
-          transition: all 0.3s ease;
+          outline: none;
+          display: inline-block;
         }
 
-        .resume-btn:hover {
-          background: rgba(56, 189, 248, 0.2);
-          transform: translateY(-2px);
-          box-shadow: 0 4px 15px rgba(56, 189, 248, 0.15);
+        .resume-btn:focus-visible {
+          outline: 2px solid var(--nav-focus-ring);
+          outline-offset: 4px;
         }
 
-        /* Mobile Hamburger Menu Icon */
+        /* Mobile Hamburger Toggle */
         .mobile-menu-toggle {
           display: none;
-          background: none;
+          background: transparent;
           border: none;
-          color: var(--text-main);
-          font-size: 1.5rem;
+          color: var(--nav-text-main);
+          font-size: 1.8rem;
           cursor: pointer;
+          padding: 0.4rem;
+          border-radius: 0.5rem;
+          outline: none;
+          align-items: center;
+          justify-content: center;
         }
 
-        /* Mobile Dropdown */
+        .mobile-menu-toggle:focus-visible {
+          outline: 2px solid var(--nav-focus-ring);
+        }
+
+        /* Mobile Dropdown - Light Frosted Glass */
         .mobile-nav {
-          display: none;
           position: absolute;
           top: 100%;
           left: 0;
           right: 0;
-          background: rgba(15, 23, 42, 0.95);
+          background: rgba(252, 251, 250, 0.95);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border-bottom: 1px solid var(--glass-border);
-          padding: 1.5rem 2rem;
-          flex-direction: column;
-          gap: 1.5rem;
-          text-align: center;
+          border-bottom: 1px solid var(--nav-glass-border);
+          padding: 2rem;
+          box-shadow: 0 20px 40px rgba(35, 37, 36, 0.08);
+          transform-origin: top center;
         }
 
-        .mobile-nav.open {
+        .mobile-nav-list {
           display: flex;
+          flex-direction: column;
+          gap: 1.8rem;
+          align-items: center;
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        @media (min-width: 769px) {
+          .mobile-menu-toggle { display: none !important; }
+          .mobile-nav { display: none !important; }
         }
 
         @media (max-width: 768px) {
-          .nav-links {
-            display: none; /* Hide desktop links on mobile */
-          }
-          .mobile-menu-toggle {
-            display: block; /* Show hamburger on mobile */
+          .nav-list { display: none; }
+          .mobile-menu-toggle { display: flex !important; }
+        }
+
+        /* Graceful Degradation */
+        @media (prefers-reduced-motion: reduce) {
+          .navbar-wrapper, .nav-link::after {
+            transition: none !important;
           }
         }
       `}</style>
 
-      <nav className="navbar-container">
+      {/* Main Navigation Wrapper with entrance animation */}
+      <motion.nav 
+        className="navbar-wrapper" 
+        aria-label="Main Navigation"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      >
         <div className="navbar-content">
           
-          {/* Logo */}
-          <a href="#" className="nav-logo">
+          <motion.a 
+            href="#" 
+            className="nav-logo" 
+            aria-label="Hailemichael Mekonenn - Home"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Hailemichael<span>.</span>
-          </a>
+          </motion.a>
 
-          {/* Desktop Nav - Corrected Link */}
-          <div className="nav-links">
-            <a href="#skills" className="nav-link">Skills</a>
-            <a href="#projects" className="nav-link">Projects</a>
-            <a href="#contact" className="nav-link">Contact</a>
-            <a href="/hailemichaelresume.pdf?v=1" target="_blank" rel="noopener noreferrer" className="resume-btn">
-              Resume
-            </a>
-          </div>
+          {/* Desktop Navigation */}
+          <ul className="nav-list">
+            {NAV_LINKS.map((link) => (
+              <li key={link.name}>
+                <motion.a 
+                  href={link.href} 
+                  className="nav-link"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {link.name}
+                </motion.a>
+              </li>
+            ))}
+            <li>
+              <motion.a 
+                href="/hailemichaelresume.pdf?v=1" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="resume-btn"
+                aria-label="View Resume (opens in a new tab)"
+                whileHover={{ backgroundColor: '#232524', color: '#ffffff', y: -2, boxShadow: '0 4px 15px rgba(35, 37, 36, 0.1)' }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Resume
+              </motion.a>
+            </li>
+          </ul>
 
-          {/* Mobile Toggle Button */}
-          <button 
+          {/* Mobile Menu Toggle Button */}
+          <motion.button 
             className="mobile-menu-toggle" 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-navigation-menu"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            whileHover={{ backgroundColor: 'rgba(35, 37, 36, 0.05)' }}
+            whileTap={{ scale: 0.9 }}
           >
-            {isMobileMenuOpen ? '✕' : '☰'}
-          </button>
+            {isMobileMenuOpen ? <TbX aria-hidden="true" /> : <TbMenu aria-hidden="true" />}
+          </motion.button>
         </div>
 
-        {/* Mobile Nav Dropdown - Corrected Link */}
-        <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
-          <a href="#skills" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Skills</a>
-          <a href="#projects" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Projects</a>
-          <a href="#contact" className="nav-link" onClick={() => setIsMobileMenuOpen(false)}>Contact</a>
-          <a href="/hailemichaelresume.pdf?v=1" target="_blank" rel="noopener noreferrer" className="resume-btn" style={{display: 'inline-block', width: 'fit-content', margin: '0 auto'}}>
-            Resume
-          </a>
-        </div>
-      </nav>
+        {/* Mobile Navigation Dropdown managed by AnimatePresence */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div 
+              id="mobile-navigation-menu"
+              className="mobile-nav"
+              initial={{ opacity: 0, y: -20, scaleY: 0.95 }}
+              animate={{ opacity: 1, y: 0, scaleY: 1 }}
+              exit={{ opacity: 0, y: -20, scaleY: 0.95 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <ul className="mobile-nav-list">
+                {NAV_LINKS.map((link) => (
+                  <li key={link.name}>
+                    <motion.a 
+                      href={link.href} 
+                      className="nav-link" 
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {link.name}
+                    </motion.a>
+                  </li>
+                ))}
+                <li>
+                  <motion.a 
+                    href="/hailemichaelresume.pdf?v=1" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="resume-btn"
+                    style={{ marginTop: '0.5rem' }}
+                    whileHover={{ backgroundColor: '#232524', color: '#ffffff' }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Resume
+                  </motion.a>
+                </li>
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </motion.nav>
     </>
   );
-};
+});
+
+Navbar.displayName = 'Navbar';
 
 export default Navbar;

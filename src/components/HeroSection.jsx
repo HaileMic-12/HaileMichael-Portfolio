@@ -1,19 +1,47 @@
-import React from 'react';
+import React, { memo } from 'react';
+import { motion } from 'framer-motion';
 // Make sure this matches your actual image file name!
 import profileImage from '../assets/file_0000000097c071f481347f6fbeee2090.png';
 
-const HeroSection = () => {
+// 1. MOTION ORCHESTRATION VARIANTS
+// This controls the cascading waterfall effect for the text
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.15, // Delay between each child appearing
+      delayChildren: 0.2,    // Initial delay before sequence starts
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, filter: 'blur(8px)' },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: 'blur(0px)',
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+  }
+};
+
+const HeroSection = memo(() => {
   return (
     <>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap');
+
         :root {
-          --accent-cyan: #38bdf8;
-          --accent-purple: #8b5cf6;
-          --text-main: #f8fafc;
-          --text-muted: #cbd5e1;
-          --bg-dark: #0f172a;
-          --glass-bg: rgba(30, 41, 59, 0.4);
-          --glass-border: rgba(255, 255, 255, 0.08);
+          --hero-bg: #F4F3F0;
+          --hero-text-main: #232524;
+          --hero-text-muted: #5C605E;
+          --hero-accent-primary: #C08457;
+          --hero-accent-hover: #8B5A2B;
+          --hero-accent-secondary: #8A9A86;
+          --hero-card-bg: rgba(252, 251, 250, 0.65);
+          --hero-border: rgba(220, 218, 213, 0.5);
+          --hero-focus-ring: #C08457;
         }
 
         .hero-section {
@@ -23,31 +51,36 @@ const HeroSection = () => {
           display: flex;
           align-items: center;
           overflow: hidden;
-          background-color: var(--bg-dark);
+          background-color: var(--hero-bg);
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+          font-family: 'Inter', sans-serif;
         }
 
-        /* Ambient Orbs - Matched to Project Gallery */
-        .orb {
+        /* Ambient Continuous CSS Animations */
+        .hero-orb {
           position: absolute;
           border-radius: 50%;
-          filter: blur(120px);
+          filter: blur(100px);
           z-index: 0;
-          animation: float 20s infinite ease-in-out alternate;
-          opacity: 0.5;
+          animation: float-hero 25s infinite ease-in-out alternate;
+          opacity: 0.6;
+          pointer-events: none;
         }
+        
         .orb-1 {
           top: -10%; left: -5%; width: 600px; height: 600px;
-          background: rgba(56, 189, 248, 0.15); /* Cyan */
+          background: rgba(212, 163, 115, 0.25);
         }
+        
         .orb-2 {
           bottom: -10%; right: -5%; width: 600px; height: 600px;
-          background: rgba(139, 92, 246, 0.15); /* Purple */
-          animation-delay: -5s;
+          background: rgba(138, 154, 134, 0.3);
+          animation-delay: -7s;
         }
 
-        @keyframes float {
-          0% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(80px, 50px) scale(1.1); }
+        @keyframes float-hero {
+          0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+          100% { transform: translate(80px, 50px) scale(1.1) rotate(5deg); }
         }
 
         .hero-container {
@@ -59,105 +92,71 @@ const HeroSection = () => {
           gap: 4rem;
           position: relative;
           z-index: 1;
+          perspective: 1000px; /* Required for 3D image tilt */
         }
 
-        /* Hero Content Card - Dark Glassmorphism */
         .hero-content {
           flex: 1;
           max-width: 700px;
-          background: var(--glass-bg);
+          background: var(--hero-card-bg);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid var(--glass-border);
+          border: 1px solid rgba(255, 255, 255, 0.8);
           border-radius: 2.5rem;
           padding: 4.5rem;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-          
-          /* Container Entrance Animation */
-          opacity: 0;
-          transform: translateY(30px);
-          animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          box-shadow: 0 10px 40px rgba(35, 37, 36, 0.03), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
         }
-
-        /* --- PREMIUM ANIMATION SEQUENCE --- */
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes textReveal {
-          from { opacity: 0; transform: translateY(20px); filter: blur(5px); }
-          to { opacity: 1; transform: translateY(0); filter: blur(0); }
-        }
-
-        @keyframes imageReveal {
-          from { opacity: 0; transform: scale(0.9) translateX(40px); filter: blur(15px); }
-          to { opacity: 1; transform: scale(1) translateX(0); filter: blur(0); }
-        }
-
-        /* Applying the Staggered Delays to Content */
-        .animate-item {
-          opacity: 0; 
-          animation: textReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .delay-1 { animation-delay: 0.2s; }
-        .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
-        .delay-4 { animation-delay: 0.8s; }
-        /* ---------------------------------- */
 
         .availability-badge {
           display: inline-flex;
           align-items: center;
-          padding: 0.5rem 1rem;
-          background-color: rgba(255, 255, 255, 0.05);
-          color: var(--text-main);
-          border: 1px solid var(--glass-border);
+          padding: 0.5rem 1.2rem;
+          background-color: rgba(255, 255, 255, 0.6);
+          color: var(--hero-text-main);
+          border: 1px solid var(--hero-border);
           border-radius: 9999px;
-          font-size: 0.875rem;
+          font-size: 0.85rem;
           font-weight: 600;
           margin-bottom: 2.5rem;
           letter-spacing: 0.05em;
+          text-transform: uppercase;
         }
 
         .pulse-dot {
           width: 8px;
           height: 8px;
-          background-color: #10b981; /* Success Green for "Online/Available" */
+          background-color: var(--hero-accent-secondary);
           border-radius: 50%;
-          margin-right: 8px;
-          animation: pulse 2s infinite;
+          margin-right: 10px;
+          animation: pulse 2.5s infinite;
         }
 
         @keyframes pulse {
-          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-          70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+          0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(138, 154, 134, 0.7); }
+          70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(138, 154, 134, 0); }
+          100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(138, 154, 134, 0); }
         }
 
         .hero-title {
-          font-size: 4.2rem;
+          font-family: 'Playfair Display', serif;
+          font-size: clamp(3rem, 5vw, 4.5rem);
           font-weight: 800;
           line-height: 1.1;
-          letter-spacing: -0.02em;
-          color: var(--text-main);
+          letter-spacing: -0.03em;
+          color: var(--hero-text-main);
           margin-bottom: 1.5rem;
         }
 
         .highlight-text {
           display: block;
-          margin-top: 0.5rem;
-          /* Cyan to Purple gradient to match orbs */
-          background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          margin-top: 0.2rem;
+          color: var(--hero-accent-primary);
+          font-style: italic;
         }
 
         .hero-description {
-          font-size: 1.15rem;
-          color: var(--text-muted);
+          font-size: 1.1rem;
+          color: var(--hero-text-muted);
           margin-bottom: 3.5rem;
           line-height: 1.8;
           max-width: 90%;
@@ -169,87 +168,95 @@ const HeroSection = () => {
         }
 
         .btn-primary, .btn-secondary {
-          padding: 1.1rem 2.5rem;
-          border-radius: 1rem;
-          font-size: 1rem;
+          padding: 1rem 2.2rem;
+          border-radius: 2rem;
+          font-size: 0.95rem;
           font-weight: 600;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
           cursor: pointer;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
           text-decoration: none;
           display: inline-flex;
           align-items: center;
           justify-content: center;
+          outline: none;
         }
 
         .btn-primary {
-          background: linear-gradient(135deg, var(--accent-cyan) 0%, #0284c7 100%);
-          color: #0f172a;
+          background: var(--hero-accent-primary);
+          color: #ffffff;
           border: none;
-          box-shadow: 0 10px 20px -10px rgba(56, 189, 248, 0.5);
+          box-shadow: 0 8px 20px -6px rgba(192, 132, 87, 0.5);
         }
 
-        .btn-primary:hover {
-          transform: translateY(-4px) scale(1.02);
-          box-shadow: 0 15px 30px -10px rgba(56, 189, 248, 0.7);
+        .btn-primary:hover, .btn-primary:focus-visible {
+          background: var(--hero-accent-hover);
+          box-shadow: 0 12px 25px -6px rgba(192, 132, 87, 0.6);
         }
 
         .btn-secondary {
-          background: rgba(255, 255, 255, 0.05);
-          color: var(--text-main);
-          border: 1px solid var(--glass-border);
+          background: rgba(255, 255, 255, 0.5);
+          color: var(--hero-text-main);
+          border: 1px solid var(--hero-border);
           backdrop-filter: blur(4px);
         }
 
-        .btn-secondary:hover {
-          background: rgba(255, 255, 255, 0.1);
-          border-color: var(--accent-cyan);
-          color: var(--accent-cyan);
-          transform: translateY(-4px) scale(1.02);
+        .btn-secondary:hover, .btn-secondary:focus-visible {
+          background: #ffffff;
+          border-color: rgba(209, 213, 208, 0.8);
+          box-shadow: 0 8px 20px rgba(35, 37, 36, 0.04);
         }
 
-        /* Hero Image Container */
+        .btn-primary:focus-visible, .btn-secondary:focus-visible {
+          outline: 2px solid var(--hero-focus-ring);
+          outline-offset: 4px;
+        }
+
         .hero-visual {
           flex: 0.8;
           display: flex;
           justify-content: flex-end;
-          
-          opacity: 0;
-          animation: imageReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+          transform-style: preserve-3d;
         }
 
         .image-container {
           width: 100%;
           max-width: 420px;
           aspect-ratio: 4 / 5;
-          background: var(--glass-bg);
+          background: var(--hero-card-bg);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border-radius: 2.5rem;
-          border: 1px solid var(--glass-border);
-          box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(255, 255, 255, 0.8);
+          box-shadow: 0 20px 50px rgba(35, 37, 36, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+          padding: 1rem; 
           display: flex;
           align-items: center;
           justify-content: center;
-          overflow: hidden;
-          
           animation: gentle-float 8s ease-in-out infinite alternate;
         }
 
         @keyframes gentle-float {
           0% { transform: translateY(0px); }
-          100% { transform: translateY(-20px); box-shadow: 0 40px 70px -15px rgba(56, 189, 248, 0.1); }
+          100% { transform: translateY(-15px); }
         }
 
         .profile-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          border-radius: inherit;
-          transition: transform 0.7s ease;
+          border-radius: 1.8rem; 
+          pointer-events: none; /* Prevents image dragging ghost */
         }
 
-        .image-container:hover .profile-img {
-          transform: scale(1.05);
+        /* Graceful Degradation */
+        @media (prefers-reduced-motion: reduce) {
+          .hero-orb, .image-container, .pulse-dot {
+            animation: none !important;
+            transition: none !important;
+            transform: none !important;
+          }
         }
 
         @media (max-width: 1024px) {
@@ -258,7 +265,7 @@ const HeroSection = () => {
             text-align: center;
           }
           .hero-content {
-            padding: 3rem 2rem;
+            padding: 3.5rem 2.5rem;
             align-items: center;
             display: flex;
             flex-direction: column;
@@ -272,52 +279,88 @@ const HeroSection = () => {
         }
 
         @media (max-width: 640px) {
-          .hero-title { font-size: 3rem; }
           .hero-buttons { flex-direction: column; width: 100%; }
           .btn-primary, .btn-secondary { width: 100%; }
+          .hero-content { padding: 2.5rem 1.5rem; }
         }
       `}</style>
 
-      <section className="hero-section">
-        <div className="orb orb-1"></div>
-        <div className="orb orb-2"></div>
+      <section className="hero-section" aria-labelledby="hero-heading">
+        <div className="hero-orb orb-1" aria-hidden="true"></div>
+        <div className="hero-orb orb-2" aria-hidden="true"></div>
 
         <div className="hero-container">
-          <div className="hero-content">
+          
+          {/* Framer Motion Parent Container orchestrating the child stagger */}
+          <motion.div 
+            className="hero-content"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
             
-            <div className="availability-badge animate-item delay-1">
-              <span className="pulse-dot"></span>
+            <motion.div variants={itemVariants} className="availability-badge" role="status" aria-label="Currently available for engineering roles">
+              <span className="pulse-dot" aria-hidden="true"></span>
               Available for Engineering Roles
-            </div>
+            </motion.div>
             
-            <h1 className="hero-title animate-item delay-2">
+            <motion.h1 variants={itemVariants} id="hero-heading" className="hero-title">
               <span className="block-text">Hi, I'm</span>
               <span className="highlight-text">Hailemichael Mekonenn.</span>
-            </h1>
+            </motion.h1>
             
-            <p className="hero-description animate-item delay-3">
+            <motion.p variants={itemVariants} className="hero-description">
               An Information Systems graduate and Software Engineer specializing in building scalable web architectures and intuitive mobile experiences. From React Native to Laravel, I turn complex problems into production-ready software.
-            </p>
+            </motion.p>
             
-            <div className="hero-buttons animate-item delay-4">
-              <a href="#projects" className="btn-primary">View My Work</a>
-              <a href="#contact" className="btn-secondary">Get in Touch</a>
-            </div>
-          </div>
+            <motion.nav variants={itemVariants} className="hero-buttons" aria-label="Hero calls to action">
+              <motion.a 
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                href="#projects" 
+                className="btn-primary"
+              >
+                View My Work
+              </motion.a>
+              <motion.a 
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
+                href="#contact" 
+                className="btn-secondary"
+              >
+                Get in Touch
+              </motion.a>
+            </motion.nav>
 
-          <div className="hero-visual">
-            <div className="image-container">
+          </motion.div>
+
+          {/* Framer Motion Visual Area with 3D Hover Physics */}
+          <motion.div 
+            className="hero-visual"
+            initial={{ opacity: 0, scale: 0.9, x: 40, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, x: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.div 
+              className="image-container" aria-hidden="true"
+              whileHover={{ rotateX: 3, rotateY: -4, z: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            >
               <img 
                 src={profileImage} 
-                alt="Hailemichael Mekonenn" 
+                alt="Portrait of Hailemichael Mekonenn" 
                 className="profile-img" 
+                loading="eager"
               />
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
+
         </div>
       </section>
     </>
   );
-};
+});
+
+HeroSection.displayName = 'HeroSection';
 
 export default HeroSection;
