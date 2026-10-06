@@ -279,7 +279,7 @@ const SkillStack = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 id="skills-heading" className="section-title">
-              Engineering <span className="highlight-text">Arsenal.</span>
+           Let’s build something together
             </h2>
             <p className="section-subtitle">
               A comprehensive toolkit spanning from cross-platform mobile development to robust backend infrastructure and database management.

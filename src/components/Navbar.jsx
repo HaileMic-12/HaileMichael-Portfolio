@@ -241,7 +241,7 @@ const Navbar = memo(() => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            Hailemichael<span>.</span>
+            Hailemichael<span></span>
           </motion.a>
 
           {/* Desktop Navigation */}

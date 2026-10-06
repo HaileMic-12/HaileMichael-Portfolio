@@ -299,10 +299,10 @@ const HeroSection = memo(() => {
             animate="visible"
           >
             
-            <motion.div variants={itemVariants} className="availability-badge" role="status" aria-label="Currently available for engineering roles">
+            {/* <motion.div variants={itemVariants} className="availability-badge" role="status" aria-label="Currently available for engineering roles">
               <span className="pulse-dot" aria-hidden="true"></span>
               Available for Engineering Roles
-            </motion.div>
+            </motion.div> */}
             
             <motion.h1 variants={itemVariants} id="hero-heading" className="hero-title">
               <span className="block-text">Hi, I'm</span>
