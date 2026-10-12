@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 // Make sure this matches your actual image file name!
-import profileImage from '../assets/file_0000000097c071f481347f6fbeee2090.png';
+import profileImage from '../assets/ppf.png';
 
 // 1. MOTION ORCHESTRATION VARIANTS
 // This controls the cascading waterfall effect for the text

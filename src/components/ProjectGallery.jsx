@@ -1,13 +1,31 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { FaReact, FaPython } from 'react-icons/fa';
-import { SiFirebase, SiPhp, SiMysql } from 'react-icons/si';
+import { SiFirebase, SiPhp, SiMysql, SiNextdotjs, SiPostgresql, SiTypescript } from 'react-icons/si';
 import { TbApi, TbBrandReactNative } from 'react-icons/tb';
 
 // 1. PROJECT DATASET
 const PROJECT_DATA = [
   {
     id: 1,
+    title: "Baro Delivery",
+    role: "Full-Stack Backend Engineer",
+    techStack: ["Next.js", "TypeScript", "PostgreSQL"],
+    description: "A comprehensive multi-role food delivery and logistics platform. Engineered complex relational database schemas and implemented database-level Row Level Security (RLS) policies to ensure secure data isolation between customers, merchants, and dispatch riders.",
+    githubLink: "https://github.com/HaileMic-12/baro-delivery",
+    liveLink: "https://baro-delivery-git-main-mikeandco.vercel.app/"
+  },
+  {
+    id: 2,
+    title: "Awra CV Optimizer",
+    role: "AI & Full-Stack Developer",
+    techStack: ["Next.js", "API", "React"],
+    description: "An AI-powered career assistant built with Next.js and the Gemini API. Automates resume parsing, ATS scoring, and targeted cover letter generation, featuring dynamic PDF asset extraction and generation.",
+    githubLink: "https://github.com/HaileMic-12/Awra-Cv-Optmizer", 
+    liveLink: "#" 
+  },
+  {
+    id: 3,
     title: "Emergency Response System",
     role: "Full-Stack Architect",
     techStack: ["React Native", "React.js", "Firebase"],
@@ -17,7 +35,7 @@ const PROJECT_DATA = [
     adminLink: "https://emergency-admin-dashboard-79iid9u81-mikeandco.vercel.app" 
   },
   {
-    id: 2,
+    id: 4,
     title: "Biometric Attendance System",
     role: "Sole Developer",
     techStack: ["Python", "PHP", "MySQL"],
@@ -26,7 +44,7 @@ const PROJECT_DATA = [
     liveLink: "#"
   },
   {
-    id: 3, 
+    id: 5, 
     title: "Internship Management Platform",
     role: "Full-Stack Developer",
     techStack: ["React", "Firebase"],
@@ -35,10 +53,10 @@ const PROJECT_DATA = [
     liveLink: "https://internship-management-system-26q1-wu0kq7mov-mikeandco.vercel.app" 
   },
   {
-    id: 4,
+    id: 6,
     title: "Social & Gaming Asset Marketplace",
     role: "Co-Creator",
-    techStack: ["React", "Python (Bot)", "APIs"],
+    techStack: ["React", "Python", "API"],
     description: "A collaborative web application designed for buying and trading social media and gaming assets. Engineered the React web interface to seamlessly communicate with a custom Python bot that automates backend processes.",
     githubLink: "#",
     liveLink: "https://t.me/AderaTradeBot"
@@ -50,6 +68,9 @@ const TechIcon = ({ tech }) => {
   const lowerTech = tech.toLowerCase();
   if (lowerTech.includes('react native')) return <TbBrandReactNative style={{ color: '#61DAFB' }} aria-hidden="true" />;
   if (lowerTech.includes('react')) return <FaReact style={{ color: '#61DAFB' }} aria-hidden="true" />;
+  if (lowerTech.includes('next')) return <SiNextdotjs style={{ color: '#000000' }} aria-hidden="true" />;
+  if (lowerTech.includes('typescript')) return <SiTypescript style={{ color: '#3178C6' }} aria-hidden="true" />;
+  if (lowerTech.includes('postgres')) return <SiPostgresql style={{ color: '#336791' }} aria-hidden="true" />;
   if (lowerTech.includes('firebase')) return <SiFirebase style={{ color: '#FFCA28' }} aria-hidden="true" />;
   if (lowerTech.includes('python')) return <FaPython style={{ color: '#3776AB' }} aria-hidden="true" />;
   if (lowerTech.includes('php')) return <SiPhp style={{ color: '#777BB4' }} aria-hidden="true" />;
@@ -63,7 +84,6 @@ const ProjectCard = memo(({ project, index }) => (
   <motion.article 
     className="project-card" 
     aria-labelledby={`project-title-${project.id}`}
-    // Scroll Reveal Optimization
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "-50px" }}
@@ -72,7 +92,6 @@ const ProjectCard = memo(({ project, index }) => (
       delay: index * 0.12, 
       ease: [0.16, 1, 0.3, 1] 
     }}
-    // Elegant, subtle lift on hover (Removed the dizzying 3D wobble)
     whileHover={{ y: -6 }}
   >
     <header>
@@ -89,7 +108,7 @@ const ProjectCard = memo(({ project, index }) => (
         <motion.li 
           key={i} 
           className="tech-tag"
-          whileHover={{ y: -2 }} // Subtle nudge instead of scale bounce
+          whileHover={{ y: -2 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
           {tech} <span className="fs-6 d-flex"><TechIcon tech={tech} /></span>
@@ -138,7 +157,7 @@ const ProjectGallery = () => {
           --gallery-accent-primary: #C08457;
           --gallery-accent-hover: #8B5A2B;
           --gallery-card-bg: rgba(252, 251, 250, 0.65);
-          --gallery-card-bg-hover: rgba(252, 251, 250, 0.95); /* Slightly more opaque on hover */
+          --gallery-card-bg-hover: rgba(252, 251, 250, 0.95);
           --gallery-border: rgba(220, 218, 213, 0.5);
           --gallery-focus-ring: #C08457;
         }
@@ -153,7 +172,6 @@ const ProjectGallery = () => {
           font-family: 'Inter', sans-serif;
         }
 
-        /* Ambient Watercolor Orbs */
         .gallery-orb {
           position: absolute;
           border-radius: 50%;
@@ -214,7 +232,6 @@ const ProjectGallery = () => {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
           gap: 3rem;
-          /* Removed perspective for a flatter, cleaner UI */
         }
 
         .project-card {
@@ -356,7 +373,6 @@ const ProjectGallery = () => {
           color: var(--gallery-accent-hover);
         }
 
-        /* GRACEFUL DEGRADATION: Full native performance optimization fallback */
         @media (prefers-reduced-motion: reduce) {
           .gallery-orb, .gallery-header, .project-card, .project-card:hover, .project-link span, .tech-tag {
             animation: none !important;
