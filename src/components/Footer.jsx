@@ -126,7 +126,7 @@ const Footer = memo(() => {
           
           <div className="footer-text-group">
             <p className="footer-text">
-              Designed & Engineered by <span className="footer-highlight">Hailemichael Mekonenn</span>
+              Designed & Built by <span className="footer-highlight">Hailemichael Mekonenn</span>
             </p>
             <p className="footer-text" style={{ fontSize: '0.85rem' }}>
               &copy; {new Date().getFullYear()} All Rights Reserved.
