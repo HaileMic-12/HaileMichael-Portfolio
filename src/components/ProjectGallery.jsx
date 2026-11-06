@@ -22,7 +22,7 @@ const PROJECT_DATA = [
     techStack: ["Next.js", "API", "React"],
     description: "An AI-powered career assistant built with Next.js and the Gemini API. Automates resume parsing, ATS scoring, and targeted cover letter generation, featuring dynamic PDF asset extraction and generation.",
     githubLink: "https://github.com/HaileMic-12/Awra-Cv-Optmizer", 
-    liveLink: "#" 
+    liveLink: "https://awra-cv-optmizer.vercel.app" // Updated live link
   },
   {
     id: 3,
